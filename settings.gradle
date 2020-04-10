@@ -1,0 +1,2 @@
+rootProject.name='Github Users MVP'
+include ':app'
