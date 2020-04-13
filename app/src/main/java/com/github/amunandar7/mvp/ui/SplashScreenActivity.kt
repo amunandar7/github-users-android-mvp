@@ -1,0 +1,28 @@
+package com.github.amunandar7.mvp.ui
+
+import android.content.Intent
+import android.os.Bundle
+import android.os.Handler
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.github.amunandar7.mvp.R
+import com.github.amunandar7.mvp.ui.main.MainActivity
+
+class SplashScreenActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("17417", "onCreate SplashScreenActivity")
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_splash_screen)
+        Handler().postDelayed(
+            Runnable {
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+            , INTERVAL_SPLASH)
+    }
+
+    companion object {
+        const val INTERVAL_SPLASH: Long = 1000 * 3
+    }
+}
