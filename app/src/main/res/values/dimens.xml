@@ -6,5 +6,11 @@
     <dimen name="space_semi_large">20dp</dimen>
     <dimen name="space_large">24dp</dimen>
 
+    <dimen name="rounded_radius">5dp</dimen>
+    <dimen name="border_size">1dp</dimen>
+
     <dimen name="splash_screen_image_size">180dp</dimen>
+
+    <dimen name="user_avatar_list_size">60dp</dimen>
+    <dimen name="user_avatar_list_border_size">62dp</dimen>
 </resources>

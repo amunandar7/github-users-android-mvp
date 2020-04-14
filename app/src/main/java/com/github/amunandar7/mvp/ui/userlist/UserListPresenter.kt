@@ -1,12 +1,12 @@
-package com.github.amunandar7.mvp.ui.main
+package com.github.amunandar7.mvp.ui.userlist
 
 import com.github.amunandar7.mvp.api.GithubApiInterface
 import com.github.amunandar7.mvp.architecture.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class MainPresenter(githubApiInterface: GithubApiInterface) :
-    MainContract.Presenter, BasePresenter<MainContract.View>(githubApiInterface) {
+class UserListPresenter(githubApiInterface: GithubApiInterface) :
+    UserListContract.Presenter, BasePresenter<UserListContract.View>(githubApiInterface) {
 
     override fun loadMoreUserData(lastUserId: Long) {
 

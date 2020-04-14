@@ -6,7 +6,7 @@ import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.github.amunandar7.mvp.R
-import com.github.amunandar7.mvp.ui.main.MainActivity
+import com.github.amunandar7.mvp.ui.userlist.UserListActivity
 
 class SplashScreenActivity : AppCompatActivity() {
 
@@ -16,7 +16,7 @@ class SplashScreenActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash_screen)
         Handler().postDelayed(
             Runnable {
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, UserListActivity::class.java))
                 finish()
             }
             , INTERVAL_SPLASH)

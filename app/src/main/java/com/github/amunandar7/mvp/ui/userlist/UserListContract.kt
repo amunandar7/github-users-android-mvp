@@ -1,10 +1,10 @@
-package com.github.amunandar7.mvp.ui.main
+package com.github.amunandar7.mvp.ui.userlist
 
 import com.github.amunandar7.mvp.architecture.BaseView
 import com.github.amunandar7.mvp.architecture.IPresenter
 import com.github.amunandar7.mvp.model.UserModel
 
-class MainContract {
+class UserListContract {
     interface View : BaseView {
         fun onLoadUserDataSuccess(users: List<UserModel>)
         fun onLoadUserDataFailed(throwable: Throwable)
