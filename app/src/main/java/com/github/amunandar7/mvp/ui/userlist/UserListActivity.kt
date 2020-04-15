@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,6 +16,8 @@ import com.github.amunandar7.mvp.di.component.ApplicationComponent
 import com.github.amunandar7.mvp.di.component.DaggerUserListComponent
 import com.github.amunandar7.mvp.di.module.UserListModule
 import com.github.amunandar7.mvp.model.UserModel
+import com.github.amunandar7.mvp.util.notNull
+import com.github.amunandar7.mvp.view.EndlessRecyclerViewScrollListener
 import kotlinx.android.synthetic.main.activity_user_list.*
 
 
@@ -22,6 +25,7 @@ class UserListActivity : BaseActivity<UserListContract.Presenter>(), UserListCon
     UserListAdapter.UserListInteractionListener {
 
     private val userListAdapter: UserListAdapter by lazy { UserListAdapter(this) }
+    lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,19 +65,61 @@ class UserListActivity : BaseActivity<UserListContract.Presenter>(), UserListCon
     }
 
     override fun initializeView() {
+        userListLayout.isRefreshing = true
+        initializeListAdapter()
+        initializeListener()
+    }
+
+    private fun initializeListAdapter() {
         val layoutManager = GridLayoutManager(this, 2)
-        userlist.layoutManager = layoutManager
+        scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun getFooterViewType(defaultNoFooterViewType: Int): Int {
+                return defaultNoFooterViewType
+            }
+
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                userListAdapter.getLastId().notNull {
+                    userListAdapter.onLoadMore()
+                    presenter.loadMoreUserData(it)
+                }
+            }
+        }
         userListAdapter.setListener(this)
+        userlist.addOnScrollListener(scrollListener)
+        userlist.layoutManager = layoutManager
         userlist.adapter = userListAdapter
     }
 
+    private fun initializeListener() {
+        userListLayout.setOnRefreshListener {
+            userListAdapter.isLoading = true
+            userListAdapter.clearData()
+            scrollListener.reset()
+            presenter.refreshData()
+        }
+    }
+
     override fun onUserItemCLicked(userModel: UserModel) {
-        //TODO go to user detail page
         Toast.makeText(this, "Id ${userModel.id} clicked", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onSwipeRefresh() {
+        userListLayout.isRefreshing = true
+        userlist.visibility = View.VISIBLE
+        noResult.visibility = View.GONE
     }
 
     override fun onLoadUserDataSuccess(users: List<UserModel>) {
         userListAdapter.addUsers(users)
+        if (userListAdapter.itemCount > 0) {
+            userlist.visibility = View.VISIBLE
+            noResult.visibility = View.GONE
+        } else {
+            userlist.visibility = View.GONE
+            noResult.visibility = View.VISIBLE
+        }
+        userListLayout.isRefreshing = false
+
     }
 
     override fun onLoadUserDataFailed(throwable: Throwable) {

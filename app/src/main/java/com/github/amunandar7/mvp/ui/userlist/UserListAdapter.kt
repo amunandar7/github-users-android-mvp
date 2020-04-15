@@ -9,6 +9,8 @@ import com.github.amunandar7.mvp.R
 import com.github.amunandar7.mvp.model.UserModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.layout_user_list_item.view.*
+import kotlinx.android.synthetic.main.layout_user_list_item.view.userAvatar
+import kotlinx.android.synthetic.main.layout_user_list_loading.view.*
 
 class UserListAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -28,7 +30,7 @@ class UserListAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.
                 LayoutInflater.from(context).inflate(R.layout.layout_user_list_item, parent, false)
             )
         else LoadingViewHolder(
-            LayoutInflater.from(context).inflate(R.layout.layout_user_list_item, parent, false)
+            LayoutInflater.from(context).inflate(R.layout.layout_user_list_loading, parent, false)
         )
     }
 
@@ -55,8 +57,8 @@ class UserListAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.
     }
 
     fun getLastId(): Long? {
-        if (itemCount > 0)
-            return users.get(itemCount - 1).id
+        if (users.size > 0)
+            return users.get(users.size - 1).id
         return null
     }
 
@@ -70,6 +72,10 @@ class UserListAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.
         notifyDataSetChanged()
     }
 
+    fun onLoadMore() {
+        isLoading = true
+        notifyDataSetChanged()
+    }
 
     fun clearData() {
         users.clear()
@@ -86,7 +92,7 @@ class UserListAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.
 
     class LoadingViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind() {
-//            itemView.userItemShimmer.startShimmer()
+            itemView.userItemShimmer.startShimmer()
         }
     }
 

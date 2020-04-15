@@ -8,21 +8,30 @@ import io.reactivex.schedulers.Schedulers
 class UserListPresenter(githubApiInterface: GithubApiInterface) :
     UserListContract.Presenter, BasePresenter<UserListContract.View>(githubApiInterface) {
 
-    override fun loadMoreUserData(lastUserId: Long) {
-
-    }
-
-    override fun searchUserData(q: String) {
-    }
-
     override fun onViewCreated() {
         view?.initializeView()
+        refreshData()
+    }
+
+    override fun refreshData() {
         githubApiInterface.users.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
                 view?.onLoadUserDataSuccess(it)
             }, {
                 view?.onLoadUserDataFailed(it)
             })
+    }
+
+    override fun loadMoreUserData(lastUserId: Long) {
+        githubApiInterface.getMoreUsers(lastUserId).subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()).subscribe({
+                view?.onLoadUserDataSuccess(it)
+            }, {
+                view?.onLoadUserDataFailed(it)
+            })
+    }
+
+    override fun searchUserData(q: String) {
     }
 
 }
