@@ -51,20 +51,20 @@ class SearchUserActivity : BaseActivity<SearchUserContract.Presenter>(), SearchU
             override fun afterTextChanged(editable: Editable) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val newString = s.toString()
+                searchValue = newString
                 Handler().postDelayed({
-                    val newString = s.toString()
-                    if (newString.length > 0) {
-                        searchUserAdapter.isLoading = true
-                        searchUserAdapter.clearData()
-                        if (!newString.equals(searchValue)) {
-                            searchValue = newString
+                    if (newString.equals(searchValue)) {
+                        if (newString.length > 0) {
+                            searchUserAdapter.isLoading = true
+                            searchUserAdapter.clearData()
                             scrollListener.reset()
                             searchUserAdapter.clearData()
                             presenter.searchUser(searchValue, 1)
+                        } else {
+                            searchUserAdapter.isLoading = false
+                            searchUserAdapter.clearData()
                         }
-                    } else {
-                        searchUserAdapter.isLoading = false
-                        searchUserAdapter.clearData()
                     }
                 }, SEARCH_DELAY)
             }
