@@ -1,4 +1,4 @@
-package com.github.amunandar7.mvp.ui.userlist
+package com.github.amunandar7.mvp.ui.searchuser
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,29 +7,30 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.amunandar7.mvp.R
 import com.github.amunandar7.mvp.model.UserModel
+import com.github.amunandar7.mvp.ui.userlist.UserListAdapter
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.layout_user_list_item.view.*
-import kotlinx.android.synthetic.main.layout_user_list_loading.view.*
+import kotlinx.android.synthetic.main.layout_search_user_item.view.*
+import kotlinx.android.synthetic.main.layout_search_user_loading.view.*
 
-class UserListAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+class SearchUserAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val users = mutableListOf<UserModel>()
 
-    private var listener: UserListInteractionListener? = null
+    private var listener: SearchUserInteractionListener? = null
 
-    var isLoading = true
+    var isLoading = false
 
     override fun getItemViewType(position: Int): Int {
-        return if (position >= users.size) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
+        return if (position >= users.size) UserListAdapter.VIEW_TYPE_LOADING else UserListAdapter.VIEW_TYPE_ITEM
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == VIEW_TYPE_ITEM)
+        return if (viewType == UserListAdapter.VIEW_TYPE_ITEM)
             UserItemHolder(
-                LayoutInflater.from(context).inflate(R.layout.layout_user_list_item, parent, false)
+                LayoutInflater.from(context)
+                    .inflate(R.layout.layout_search_user_item, parent, false)
             )
         else LoadingViewHolder(
-            LayoutInflater.from(context).inflate(R.layout.layout_user_list_loading, parent, false)
+            LayoutInflater.from(context).inflate(R.layout.layout_search_user_loading, parent, false)
         )
     }
 
@@ -49,19 +50,13 @@ class UserListAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.
             val userModel = users.get(position)
             holder.bind(userModel)
             holder.itemView.setOnClickListener {
-                listener?.onUserItemCLicked(userModel)
+                listener?.onSearchItemClicked(userModel)
             }
         } else if (holder is LoadingViewHolder)
             holder.bind()
     }
 
-    fun getLastId(): Long? {
-        if (users.size > 0)
-            return users.get(users.size - 1).id
-        return null
-    }
-
-    fun setListener(listener: UserListInteractionListener) {
+    fun setListener(listener: SearchUserInteractionListener) {
         this.listener = listener
     }
 
@@ -84,20 +79,20 @@ class UserListAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.
     class UserItemHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(userModel: UserModel) {
-            itemView.userListItemLogin.text = userModel.login
+            itemView.searchUserItemName.text = userModel.login
             Picasso.with(itemView.context).load(userModel.avatarUrl)
-                .into(itemView.userListItemAvatar)
+                .into(itemView.searchUserItemAvatar)
         }
     }
 
     class LoadingViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind() {
-            itemView.userItemShimmer.startShimmer()
+            itemView.searchUserItemShimmer.startShimmer()
         }
     }
 
-    interface UserListInteractionListener {
-        fun onUserItemCLicked(userModel: UserModel)
+    interface SearchUserInteractionListener {
+        fun onSearchItemClicked(userModel: UserModel)
     }
 
     companion object {

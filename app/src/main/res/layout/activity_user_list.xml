@@ -14,9 +14,10 @@
         android:layout_gravity="center_horizontal"
         android:layout_margin="30dp"
         android:text="No Result"
-        android:textSize="24dp"
+        android:textSize="18pt"
         android:textStyle="bold"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/userListLayout"

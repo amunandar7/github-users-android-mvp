@@ -10,7 +10,7 @@ import dagger.Provides
 
 @Module
 class UserListModule(
-    var activity: UserListActivity
+    val activity: UserListActivity
 ) {
 
     @Provides

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/space_medium"
+    android:layout_marginTop="@dimen/space_tiny"
+    android:layout_marginRight="@dimen/space_medium"
+    android:layout_marginBottom="@dimen/space_tiny"
+    android:background="@drawable/rounded_border_accent"
+    android:orientation="horizontal"
+    android:padding="@dimen/space_medium">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+
+        <View
+            android:layout_width="@dimen/user_avatar_list_border_size"
+            android:layout_height="@dimen/user_avatar_list_border_size"
+            android:layout_gravity="center"
+            android:background="@drawable/circle_background_accent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/searchUserItemAvatar"
+            android:layout_width="@dimen/user_avatar_list_size"
+            android:layout_height="@dimen/user_avatar_list_size"
+            android:layout_gravity="center_vertical"
+            tools:src="@drawable/ic_github_circle" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/searchUserItemName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/space_medium"
+        android:textColor="@color/colorPrimary"
+        android:textSize="8pt"
+        tools:text="Achmad Munandar" />
+
+</LinearLayout>

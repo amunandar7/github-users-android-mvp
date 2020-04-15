@@ -12,7 +12,6 @@
         android:background="@drawable/rounded_border_accent"
         android:paddingBottom="@dimen/space_medium">
 
-
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -24,14 +23,14 @@
             android:layout_width="@dimen/user_avatar_list_border_size"
             android:layout_height="@dimen/user_avatar_list_border_size"
             android:background="@drawable/circle_background_accent"
-            app:layout_constraintBottom_toBottomOf="@id/userAvatar"
-            app:layout_constraintEnd_toEndOf="@id/userAvatar"
-            app:layout_constraintStart_toStartOf="@id/userAvatar"
-            app:layout_constraintTop_toTopOf="@id/userAvatar" />
+            app:layout_constraintBottom_toBottomOf="@id/userListLoadingAvatar"
+            app:layout_constraintEnd_toEndOf="@id/userListLoadingAvatar"
+            app:layout_constraintStart_toStartOf="@id/userListLoadingAvatar"
+            app:layout_constraintTop_toTopOf="@id/userListLoadingAvatar" />
 
 
         <com.github.ybq.android.spinkit.SpinKitView
-            android:id="@+id/userAvatar"
+            android:id="@+id/userListLoadingAvatar"
             android:layout_width="@dimen/user_avatar_list_size"
             android:layout_height="@dimen/user_avatar_list_size"
             app:SpinKit_Color="@color/colorPrimary"
@@ -45,10 +44,10 @@
             android:id="@+id/centerOfAvatar"
             android:layout_width="1dp"
             android:layout_height="1dp"
-            app:layout_constraintBottom_toBottomOf="@id/userAvatar"
-            app:layout_constraintEnd_toEndOf="@id/userAvatar"
-            app:layout_constraintStart_toStartOf="@id/userAvatar"
-            app:layout_constraintTop_toTopOf="@id/userAvatar" />
+            app:layout_constraintBottom_toBottomOf="@id/userListLoadingAvatar"
+            app:layout_constraintEnd_toEndOf="@id/userListLoadingAvatar"
+            app:layout_constraintStart_toStartOf="@id/userListLoadingAvatar"
+            app:layout_constraintTop_toTopOf="@id/userListLoadingAvatar" />
 
 
         <View
@@ -61,7 +60,7 @@
             android:background="@drawable/rounded_shimmer_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/userAvatar" />
+            app:layout_constraintTop_toBottomOf="@id/userListLoadingAvatar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.facebook.shimmer.ShimmerFrameLayout>

@@ -31,7 +31,4 @@ class UserListPresenter(githubApiInterface: GithubApiInterface) :
             })
     }
 
-    override fun searchUserData(q: String) {
-    }
-
 }

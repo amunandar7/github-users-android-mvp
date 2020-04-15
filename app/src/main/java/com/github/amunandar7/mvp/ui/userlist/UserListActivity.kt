@@ -1,13 +1,12 @@
 package com.github.amunandar7.mvp.ui.userlist
 
-import android.app.SearchManager
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.amunandar7.mvp.BaseApp
 import com.github.amunandar7.mvp.R
@@ -16,6 +15,7 @@ import com.github.amunandar7.mvp.di.component.ApplicationComponent
 import com.github.amunandar7.mvp.di.component.DaggerUserListComponent
 import com.github.amunandar7.mvp.di.module.UserListModule
 import com.github.amunandar7.mvp.model.UserModel
+import com.github.amunandar7.mvp.ui.searchuser.SearchUserActivity
 import com.github.amunandar7.mvp.util.notNull
 import com.github.amunandar7.mvp.view.EndlessRecyclerViewScrollListener
 import kotlinx.android.synthetic.main.activity_user_list.*
@@ -40,28 +40,6 @@ class UserListActivity : BaseActivity<UserListContract.Presenter>(), UserListCon
             .applicationComponent(applicationComponent)
             .userListModule(UserListModule(this)).build()
         activityComponent.inject(this)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.search_menu, menu)
-        // Associate searchable configuration with the SearchView
-        val searchManager =
-            getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchView = menu.findItem(R.id.search).actionView as SearchView
-        searchView.setSearchableInfo(
-            searchManager.getSearchableInfo(componentName)
-        )
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return query != null
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                Log.d("17412", "newText = $newText")
-                return newText != null
-            }
-        })
-        return super.onCreateOptionsMenu(menu)
     }
 
     override fun initializeView() {
@@ -101,6 +79,29 @@ class UserListActivity : BaseActivity<UserListContract.Presenter>(), UserListCon
 
     override fun onUserItemCLicked(userModel: UserModel) {
         Toast.makeText(this, "Id ${userModel.id} clicked", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.search_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d("17417", "onOptionsItemSelected")
+        when (item.itemId) {
+            R.id.search -> {
+                openSearchPage()
+                return true
+            }
+            else -> {
+                return super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
+    private fun openSearchPage() {
+        Log.d("17417", "openSearchPage")
+        startActivity(Intent(this, SearchUserActivity::class.java))
     }
 
     override fun onSwipeRefresh() {

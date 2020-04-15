@@ -19,14 +19,14 @@
         android:layout_width="@dimen/user_avatar_list_border_size"
         android:layout_height="@dimen/user_avatar_list_border_size"
         android:background="@drawable/circle_background_accent"
-        app:layout_constraintBottom_toBottomOf="@id/userAvatar"
-        app:layout_constraintEnd_toEndOf="@id/userAvatar"
-        app:layout_constraintStart_toStartOf="@id/userAvatar"
-        app:layout_constraintTop_toTopOf="@id/userAvatar" />
+        app:layout_constraintBottom_toBottomOf="@id/userListItemAvatar"
+        app:layout_constraintEnd_toEndOf="@id/userListItemAvatar"
+        app:layout_constraintStart_toStartOf="@id/userListItemAvatar"
+        app:layout_constraintTop_toTopOf="@id/userListItemAvatar" />
 
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/userAvatar"
+        android:id="@+id/userListItemAvatar"
         android:layout_width="@dimen/user_avatar_list_size"
         android:layout_height="@dimen/user_avatar_list_size"
         android:src="@drawable/ic_github_circle"
@@ -39,20 +39,20 @@
         android:id="@+id/centerOfAvatar"
         android:layout_width="1dp"
         android:layout_height="1dp"
-        app:layout_constraintBottom_toBottomOf="@id/userAvatar"
-        app:layout_constraintEnd_toEndOf="@id/userAvatar"
-        app:layout_constraintStart_toStartOf="@id/userAvatar"
-        app:layout_constraintTop_toTopOf="@id/userAvatar" />
+        app:layout_constraintBottom_toBottomOf="@id/userListItemAvatar"
+        app:layout_constraintEnd_toEndOf="@id/userListItemAvatar"
+        app:layout_constraintStart_toStartOf="@id/userListItemAvatar"
+        app:layout_constraintTop_toTopOf="@id/userListItemAvatar" />
 
     <TextView
-        android:id="@+id/userLogin"
+        android:id="@+id/userListItemLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_tiny"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/userAvatar"
+        app:layout_constraintTop_toBottomOf="@id/userListItemAvatar"
         tools:text="Achmad Munandar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

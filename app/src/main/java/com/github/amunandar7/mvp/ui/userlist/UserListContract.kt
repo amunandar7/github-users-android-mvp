@@ -14,6 +14,5 @@ class UserListContract {
     interface Presenter : IPresenter {
         fun refreshData()
         fun loadMoreUserData(lastUserId: Long)
-        fun searchUserData(q: String)
     }
 }
