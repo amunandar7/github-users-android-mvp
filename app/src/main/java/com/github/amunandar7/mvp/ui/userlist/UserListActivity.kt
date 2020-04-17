@@ -14,11 +14,16 @@ import com.github.amunandar7.mvp.architecture.BaseActivity
 import com.github.amunandar7.mvp.di.component.ApplicationComponent
 import com.github.amunandar7.mvp.di.component.DaggerUserListComponent
 import com.github.amunandar7.mvp.di.module.UserListModule
+import com.github.amunandar7.mvp.eventbus.ApiErrorEvent
 import com.github.amunandar7.mvp.model.UserModel
 import com.github.amunandar7.mvp.ui.searchuser.SearchUserActivity
+import com.github.amunandar7.mvp.util.HttpErrorCode
 import com.github.amunandar7.mvp.util.notNull
 import com.github.amunandar7.mvp.view.EndlessRecyclerViewScrollListener
 import kotlinx.android.synthetic.main.activity_user_list.*
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import javax.net.ssl.HttpsURLConnection
 
 
 class UserListActivity : BaseActivity<UserListContract.Presenter>(), UserListContract.View,
@@ -115,16 +120,37 @@ class UserListActivity : BaseActivity<UserListContract.Presenter>(), UserListCon
         if (userListAdapter.itemCount > 0) {
             userlist.visibility = View.VISIBLE
             noResult.visibility = View.GONE
+            noInternet.visibility = View.GONE
         } else {
             userlist.visibility = View.GONE
             noResult.visibility = View.VISIBLE
+            noInternet.visibility = View.GONE
         }
         userListLayout.isRefreshing = false
 
     }
 
     override fun onLoadUserDataFailed(throwable: Throwable) {
+        userListLayout.isRefreshing = false
+        userListAdapter.isLoading = false
+        userListAdapter.notifyDataSetChanged()
         throwable.printStackTrace()
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onApiErrorEvent(event: ApiErrorEvent) {
+        Log.d("17412", "BaseActivity onApiErrorEvent ${event.code}")
+        when (event.code) {
+            HttpsURLConnection.HTTP_FORBIDDEN -> { // API Github limit exceeded
+                //TODO
+            }
+            HttpErrorCode.NO_NETWORK_AVAILABLE -> {
+                userlist.visibility = View.GONE
+                noResult.visibility = View.GONE
+                noInternet.visibility = View.VISIBLE
+            }
+        }
     }
 
 }

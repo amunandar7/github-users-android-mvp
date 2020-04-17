@@ -8,4 +8,11 @@ interface BaseView {
     fun onPrepare() {}
 
     fun initializeView()
+
+    fun onRequestLimitExceeded() {
+    }
+
+    fun onTimeout() {}
+
+    fun onNetworkError() {}
 }

@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Github Users MVP</string>
     <string name="search_hint">Search...</string>
+    <string name="close">Tutup</string>
+    <string name="no_internet_title">No Internet Connection</string>
+    <string name="no_internet_text">Please check your connection</string>
+    <string name="api_limit_exceeded_title">Request Limit Exceeded</string>
+    <string name="api_limit_exceeded_text">Your API rate limit exceeded. Please try a moment later</string>
 </resources>

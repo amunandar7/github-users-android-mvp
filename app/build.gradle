@@ -69,6 +69,8 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    implementation 'com.facebook.stetho:stetho:1.5.0'
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
 
 
     // rx
@@ -97,6 +99,7 @@ dependencies {
     //tools
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'net.danlew:android.joda:2.9.9.2'
+    implementation 'org.greenrobot:eventbus:3.2.0'
 
 
 }

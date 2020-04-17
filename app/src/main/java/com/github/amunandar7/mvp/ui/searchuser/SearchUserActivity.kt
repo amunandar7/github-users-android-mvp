@@ -110,6 +110,8 @@ class SearchUserActivity : BaseActivity<SearchUserContract.Presenter>(), SearchU
 
     override fun onSearchUserFailed(throwable: Throwable) {
         throwable.printStackTrace()
+        searchUserAdapter.isLoading = false
+        searchUserAdapter.notifyDataSetChanged()
     }
 
     companion object {

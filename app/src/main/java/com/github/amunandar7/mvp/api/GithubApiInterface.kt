@@ -12,13 +12,13 @@ import retrofit2.http.Query
 
 interface GithubApiInterface {
 
-    @get:GET("users?perpage=${Constant.TOTAL_PER_PAGE}")
+    @get:GET("users?per_page=${Constant.TOTAL_PER_PAGE}")
     val users: Observable<List<UserModel>>
 
-    @GET("users?perpage=${Constant.TOTAL_PER_PAGE}")
+    @GET("users?per_page=${Constant.TOTAL_PER_PAGE}")
     fun getMoreUsers(@Query("since") lastUserId: Long): Observable<List<UserModel>>
 
-    @GET("search/users?perpage=${Constant.TOTAL_PER_PAGE}")
+    @GET("search/users?per_page=${Constant.TOTAL_PER_PAGE}")
     fun searchUsers(
         @Query("q") query: String,
         @Query("page") page: Int

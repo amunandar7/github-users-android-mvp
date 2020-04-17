@@ -1,17 +1,23 @@
 package com.github.amunandar7.mvp.di.module
 
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.github.amunandar7.mvp.BaseApp
 import com.github.amunandar7.mvp.BuildConfig
 import com.github.amunandar7.mvp.api.GithubApiInterface
+import com.github.amunandar7.mvp.api.InterceptorManager
+import com.github.amunandar7.mvp.api.RxErrorHandlingCallAdapterFactory
 import com.github.amunandar7.mvp.di.scope.ApplicationScope
+import com.github.amunandar7.mvp.util.Constant
 import com.readystatesoftware.chuck.ChuckInterceptor
 import dagger.Module
 import dagger.Provides
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
+import java.util.concurrent.TimeUnit
 
 
 @Module
@@ -28,7 +34,7 @@ class GithubApiModule(val baseApp: BaseApp) {
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.GITHUB_API_URL)
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addCallAdapterFactory(RxErrorHandlingCallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
@@ -37,10 +43,24 @@ class GithubApiModule(val baseApp: BaseApp) {
     @Provides
     @ApplicationScope
     fun provideOkHttpCleint(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
-            .addInterceptor(ChuckInterceptor(baseApp))
-            .build()
+        val httpCacheDirectory = File(baseApp.cacheDir, "responses")
+        val cacheSize = 20 * 1024 * 1024 // 20 MiB
+        val cache = Cache(httpCacheDirectory, cacheSize.toLong())
+        val client = OkHttpClient.Builder()
+            .cache(cache)
+            .addNetworkInterceptor(InterceptorManager.rewriteResponseInterceptor)
+            .addInterceptor(InterceptorManager.rewriteResponseInterceptor)
+            .readTimeout(Constant.TIMEOUT_IN_SECOND, TimeUnit.SECONDS)
+            .connectTimeout(Constant.TIMEOUT_IN_SECOND, TimeUnit.SECONDS)
+
+        if (BuildConfig.DEBUG) {
+            client.addInterceptor(ChuckInterceptor(baseApp))
+            client.addInterceptor(httpLoggingInterceptor)
+            client.networkInterceptors().add(StethoInterceptor())
+            client.hostnameVerifier { _, _ -> true }
+        }
+
+        return client.build()
     }
 
     @Provides

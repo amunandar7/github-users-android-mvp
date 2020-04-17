@@ -1,6 +1,5 @@
 package com.github.amunandar7.mvp
 
-import android.util.Log
 import androidx.multidex.MultiDexApplication
 import com.github.amunandar7.mvp.api.GithubApiInterface
 import com.github.amunandar7.mvp.di.component.ApplicationComponent
@@ -13,7 +12,6 @@ class BaseApp : MultiDexApplication() {
     lateinit var githubApiInterface: GithubApiInterface
 
     override fun onCreate() {
-        Log.d("17417", "onCreate BaseApp")
         super.onCreate()
 
         instance = this
