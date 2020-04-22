@@ -2,11 +2,12 @@ package com.github.amunandar7.mvp.ui.userlist
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.amunandar7.mvp.BaseApp
 import com.github.amunandar7.mvp.R
@@ -21,6 +22,7 @@ import com.github.amunandar7.mvp.util.HttpErrorCode
 import com.github.amunandar7.mvp.util.notNull
 import com.github.amunandar7.mvp.view.EndlessRecyclerViewScrollListener
 import kotlinx.android.synthetic.main.activity_user_list.*
+import kotlinx.android.synthetic.main.layout_toolbar.*
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import javax.net.ssl.HttpsURLConnection
@@ -28,7 +30,7 @@ import javax.net.ssl.HttpsURLConnection
 
 class UserListActivity : BaseActivity<UserListContract.Presenter>(), UserListContract.View,
     UserListAdapter.UserListInteractionListener {
-
+    private var doubleBackToExit = false
     private val userListAdapter: UserListAdapter by lazy { UserListAdapter(this) }
     lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
@@ -48,9 +50,16 @@ class UserListActivity : BaseActivity<UserListContract.Presenter>(), UserListCon
     }
 
     override fun initializeView() {
+        initializeToolbar()
         userListLayout.isRefreshing = true
         initializeListAdapter()
         initializeListener()
+    }
+
+    private fun initializeToolbar() {
+        val toolbar = toolbar as Toolbar
+        setSupportActionBar(toolbar)
+        supportActionBar?.setTitle(R.string.activity_user_list_title)
     }
 
     private fun initializeListAdapter() {
@@ -92,7 +101,6 @@ class UserListActivity : BaseActivity<UserListContract.Presenter>(), UserListCon
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d("17417", "onOptionsItemSelected")
         when (item.itemId) {
             R.id.search -> {
                 openSearchPage()
@@ -105,27 +113,18 @@ class UserListActivity : BaseActivity<UserListContract.Presenter>(), UserListCon
     }
 
     private fun openSearchPage() {
-        Log.d("17417", "openSearchPage")
         startActivity(Intent(this, SearchUserActivity::class.java))
     }
 
     override fun onSwipeRefresh() {
         userListLayout.isRefreshing = true
         userlist.visibility = View.VISIBLE
-        noResult.visibility = View.GONE
+        noResultLayout.visibility = View.GONE
     }
 
     override fun onLoadUserDataSuccess(users: List<UserModel>) {
         userListAdapter.addUsers(users)
-        if (userListAdapter.itemCount > 0) {
-            userlist.visibility = View.VISIBLE
-            noResult.visibility = View.GONE
-            noInternet.visibility = View.GONE
-        } else {
-            userlist.visibility = View.GONE
-            noResult.visibility = View.VISIBLE
-            noInternet.visibility = View.GONE
-        }
+        if (userListAdapter.itemCount > 0) showUserList() else onUsersEmpty()
         userListLayout.isRefreshing = false
 
     }
@@ -137,18 +136,51 @@ class UserListActivity : BaseActivity<UserListContract.Presenter>(), UserListCon
         throwable.printStackTrace()
     }
 
+    private fun showUserList() {
+        userlist.visibility = View.VISIBLE
+        noResultLayout.visibility = View.GONE
+        noInternetLayout.visibility = View.GONE
+        reachLimitLayout.visibility = View.GONE
+    }
+
+    private fun onUsersEmpty() {
+        userlist.visibility = View.GONE
+        noResultLayout.visibility = View.VISIBLE
+        noInternetLayout.visibility = View.GONE
+        reachLimitLayout.visibility = View.GONE
+    }
+
+    private fun onNoNetworkAvailable() {
+        userlist.visibility = View.GONE
+        noResultLayout.visibility = View.GONE
+        noInternetLayout.visibility = View.VISIBLE
+        reachLimitLayout.visibility = View.GONE
+    }
+
+    private fun onReachApiLimit() {
+        userlist.visibility = View.GONE
+        noResultLayout.visibility = View.GONE
+        noInternetLayout.visibility = View.GONE
+        reachLimitLayout.visibility = View.VISIBLE
+    }
+
+    override fun onBackPressed() {
+        if (doubleBackToExit) {
+            super.onBackPressed()
+            return
+        }
+        this.doubleBackToExit = true
+        Toast.makeText(this, R.string.double_back_to_exit, Toast.LENGTH_SHORT).show()
+        Handler().postDelayed({ doubleBackToExit = false }, 3000)
+
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onApiErrorEvent(event: ApiErrorEvent) {
-        Log.d("17412", "BaseActivity onApiErrorEvent ${event.code}")
-        when (event.code) {
-            HttpsURLConnection.HTTP_FORBIDDEN -> { // API Github limit exceeded
-                //TODO
-            }
-            HttpErrorCode.NO_NETWORK_AVAILABLE -> {
-                userlist.visibility = View.GONE
-                noResult.visibility = View.GONE
-                noInternet.visibility = View.VISIBLE
+        if (userListAdapter.itemCount == 0) {
+            when (event.code) {
+                HttpsURLConnection.HTTP_FORBIDDEN -> onReachApiLimit()
+                HttpErrorCode.NO_NETWORK_AVAILABLE -> onNoNetworkAvailable()
             }
         }
     }

@@ -12,10 +12,15 @@ import com.github.amunandar7.mvp.architecture.BaseActivity
 import com.github.amunandar7.mvp.di.component.ApplicationComponent
 import com.github.amunandar7.mvp.di.component.DaggerSearchUserComponent
 import com.github.amunandar7.mvp.di.module.SearchUserModule
+import com.github.amunandar7.mvp.eventbus.ApiErrorEvent
 import com.github.amunandar7.mvp.model.SearchResultModel
 import com.github.amunandar7.mvp.model.UserModel
+import com.github.amunandar7.mvp.util.HttpErrorCode
 import com.github.amunandar7.mvp.view.EndlessRecyclerViewScrollListener
 import kotlinx.android.synthetic.main.activity_search_user.*
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import javax.net.ssl.HttpsURLConnection
 
 class SearchUserActivity : BaseActivity<SearchUserContract.Presenter>(), SearchUserContract.View,
     SearchUserAdapter.SearchUserInteractionListener {
@@ -51,28 +56,29 @@ class SearchUserActivity : BaseActivity<SearchUserContract.Presenter>(), SearchU
             override fun afterTextChanged(editable: Editable) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val newString = s.toString()
-                searchValue = newString
-                Handler().postDelayed({
-                    if (newString.equals(searchValue)) {
-                        if (newString.length > 0) {
-                            searchUserAdapter.isLoading = true
-                            searchUserAdapter.clearData()
-                            scrollListener.reset()
-                            searchUserAdapter.clearData()
-                            presenter.searchUser(searchValue, 1)
-                        } else {
-                            searchUserAdapter.isLoading = false
-                            searchUserAdapter.clearData()
-                        }
-                    }
-                }, SEARCH_DELAY)
+                onSearching(s.toString())
             }
         })
         searchClearButton.setOnClickListener {
             searchValue = ""
             searchField.setText("")
         }
+    }
+
+    private fun onSearching(newString: String) {
+        searchValue = newString
+        searchUserAdapter.clearData()
+        if (newString.length > 0) {
+            searchUserAdapter.isLoading = true
+            Handler().postDelayed({
+                if (newString.equals(searchValue)) {
+                    scrollListener.reset()
+                    presenter.searchUser(searchValue, 1)
+                }
+            }, SEARCH_DELAY)
+        } else searchUserAdapter.isLoading = false
+        showSearchResult()
+
     }
 
     private fun setSearchResultAdapter() {
@@ -99,19 +105,51 @@ class SearchUserActivity : BaseActivity<SearchUserContract.Presenter>(), SearchU
 
     override fun onSearchUserSuccess(searchResultModel: SearchResultModel) {
         searchUserAdapter.addUsers(searchResultModel.items)
-        if (searchUserAdapter.itemCount > 0) {
-            searchResult.visibility = View.VISIBLE
-            noResult.visibility = View.GONE
-        } else {
-            searchResult.visibility = View.GONE
-            noResult.visibility = View.VISIBLE
-        }
+        if (searchUserAdapter.itemCount > 0) showSearchResult() else onNoResult()
     }
 
     override fun onSearchUserFailed(throwable: Throwable) {
         throwable.printStackTrace()
         searchUserAdapter.isLoading = false
         searchUserAdapter.notifyDataSetChanged()
+    }
+
+    private fun showSearchResult() {
+        searchResult.visibility = View.VISIBLE
+        noResultLayout.visibility = View.GONE
+        noInternetLayout.visibility = View.GONE
+        reachLimitLayout.visibility = View.GONE
+    }
+
+    private fun onNoResult() {
+        searchResult.visibility = View.GONE
+        noResultLayout.visibility = View.VISIBLE
+        noInternetLayout.visibility = View.GONE
+        reachLimitLayout.visibility = View.GONE
+    }
+
+    private fun onNoNetworkAvailable() {
+        searchResult.visibility = View.GONE
+        noResultLayout.visibility = View.GONE
+        noInternetLayout.visibility = View.VISIBLE
+        reachLimitLayout.visibility = View.GONE
+    }
+
+    private fun onReachApiLimit() {
+        searchResult.visibility = View.GONE
+        noResultLayout.visibility = View.GONE
+        noInternetLayout.visibility = View.GONE
+        reachLimitLayout.visibility = View.VISIBLE
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onApiErrorEvent(event: ApiErrorEvent) {
+        if (searchUserAdapter.itemCount == 0) {
+            when (event.code) {
+                HttpsURLConnection.HTTP_FORBIDDEN -> onReachApiLimit()
+                HttpErrorCode.NO_NETWORK_AVAILABLE -> onNoNetworkAvailable()
+            }
+        }
     }
 
     companion object {

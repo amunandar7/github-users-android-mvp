@@ -25,7 +25,6 @@
             app:SpinKit_Style="MultiplePulse" />
     </FrameLayout>
 
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,7 +32,8 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="@dimen/space_medium"
         android:text="by amunandar7"
-        android:textColor="@android:color/black"
+        android:textAppearance="@style/BoldFont"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="12pt" />
 
 </RelativeLayout>

@@ -13,4 +13,5 @@
 
     <dimen name="user_avatar_list_size">60dp</dimen>
     <dimen name="user_avatar_list_border_size">62dp</dimen>
+    <dimen name="ic_no_result_size">32dp</dimen>
 </resources>
