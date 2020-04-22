@@ -1,7 +1,6 @@
 package com.github.amunandar7.mvp.architecture
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.github.amunandar7.mvp.R
@@ -70,7 +69,6 @@ abstract class BaseActivity<P : IPresenter> : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onBaseApiErrorEvent(event: ApiErrorEvent) {
-        Log.d("17412", "BaseActivity onApiErrorEvent ${event.code}")
         when (event.code) {
             HttpsURLConnection.HTTP_FORBIDDEN -> apiLimitExceededAlert.show() // API Github limit exceeded
             HttpErrorCode.NO_NETWORK_AVAILABLE -> noInternetConnectionAlert.show()

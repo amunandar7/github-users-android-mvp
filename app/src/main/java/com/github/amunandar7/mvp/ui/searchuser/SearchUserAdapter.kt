@@ -45,6 +45,10 @@ class SearchUserAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
         return count
     }
 
+    fun getRealCount(): Int {
+        return users.size
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is UserItemHolder) {
             val userModel = users.get(position)

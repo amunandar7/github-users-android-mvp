@@ -1,6 +1,5 @@
 package com.github.amunandar7.mvp.api
 
-import android.util.Log
 import com.github.amunandar7.mvp.eventbus.ApiErrorEvent
 import com.github.amunandar7.mvp.util.HttpErrorCode
 import io.reactivex.Completable
@@ -53,14 +52,9 @@ class RxErrorHandlingCallAdapterFactory private constructor() : CallAdapter.Fact
 
         private fun catchThrowableError(throwable: Throwable) {
             if (throwable is UnknownHostException) {
-                Log.d("17412", "RxErrorHandlingCallAdapterFactory UnknownHostException")
                 val event = ApiErrorEvent(HttpErrorCode.NO_NETWORK_AVAILABLE, throwable.message)
                 eventBus.post(event)
             } else if (throwable is HttpException) {
-                Log.d(
-                    "17412",
-                    "RxErrorHandlingCallAdapterFactory HttpException ${throwable.code()}"
-                )
                 val event = ApiErrorEvent(throwable.code(), throwable.message())
                 eventBus.post(event)
             }

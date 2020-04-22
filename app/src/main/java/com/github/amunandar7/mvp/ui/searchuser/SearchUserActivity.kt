@@ -144,7 +144,7 @@ class SearchUserActivity : BaseActivity<SearchUserContract.Presenter>(), SearchU
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onApiErrorEvent(event: ApiErrorEvent) {
-        if (searchUserAdapter.itemCount == 0) {
+        if (searchUserAdapter.getRealCount() == 0) {
             when (event.code) {
                 HttpsURLConnection.HTTP_FORBIDDEN -> onReachApiLimit()
                 HttpErrorCode.NO_NETWORK_AVAILABLE -> onNoNetworkAvailable()
